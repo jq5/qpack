@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-if [ "$CIRCLE_PULL_REQUEST" = "false" ]; then
+if [ "$CIRCLE_PULL_REQUEST" = "" ]; then
     export FUZZING_TYPE="fuzzing"
     export BRANCH=${CIRCLE_BRANCH}
 else
@@ -10,7 +10,7 @@ else
 fi
 
 ## Install fuzzit
-wget -q -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/download/v2.4.44/fuzzit_Linux_x86_64
+wget -q -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/download/v2.4.46/fuzzit_Linux_x86_64
 chmod a+x fuzzit
 
 ## Install go-fuzz
@@ -22,4 +22,4 @@ clang-9 -fsanitize=fuzzer fuzz-qpack.a -o fuzz-qpack
 cd ..
 
 # Create the jobs
-./fuzzit create job --type ${FUZZING_TYPE} --branch ${BRANCH} --revision=${CIRCLE_SHA1} quic-go/fuzz-header fuzzing/fuzz-qpack
+./fuzzit create job --type ${FUZZING_TYPE} --branch ${BRANCH} --revision=${CIRCLE_SHA1} marten-seemann/qpack fuzzing/fuzz-qpack
